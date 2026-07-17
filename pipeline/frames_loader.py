@@ -34,7 +34,9 @@ def extract_frames(video_path: Path, output_dir: Path, frame_skip: int = 3) -> d
 
 def _test_frame_loader():
     vid_file = os.path.join("test_vid", "car.mp4")
-    _ = extract_frames(Path(vid_file), Path("extracted_frames"))
+    images_path = os.path.join("scene", "images")
+    os.makedirs(images_path, exist_ok=True)
+    extract_frames(Path(vid_file), Path(images_path))
 
 if __name__ == '__main__':
     _test_frame_loader()
