@@ -8,11 +8,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from .pipeline.frames_loader import extract_frames
-from .pipeline.colmap_sfm import run_sfm
-from .pipeline.gaussian_splatting import train as train_3dgs
-from .pipeline.mesh_extraction import run_mesh_extraction
-from .pipeline.config import PipelineConfig
+from pipeline.frames_loader import extract_frames
+from pipeline.colmap_sfm import run_sfm
+from pipeline.gaussian_splatting import train as train_3dgs
+from pipeline.mesh_extraction import run_mesh_extraction
+from pipeline.config import PipelineConfig
 
 def orchestrate(config: PipelineConfig) -> Path:
     config.output_dir.mkdir(parents=True, exist_ok=True)
