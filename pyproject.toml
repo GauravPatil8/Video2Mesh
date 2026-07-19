@@ -5,7 +5,6 @@ description = "Video to 3D Mesh pipeline using 3DGS and SuGaR"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "gsplat>=1.5.3",
     "opencv-python>=5.0.0.93",
     "pycolmap-cuda12>=4.1.0; sys_platform == 'linux'",
     "pycolmap>=4.1.0; sys_platform != 'linux'",

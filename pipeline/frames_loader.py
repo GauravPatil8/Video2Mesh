@@ -1,12 +1,12 @@
 import cv2
 import os
 from pathlib import Path
+import math
 
-
-def extract_frames(video_path: Path, output_dir: Path, frame_skip: int = 3) -> dict:
+def extract_frames(video_path: Path, output_dir: Path, fps: int = 3) -> dict:
     """
         Extracts frames from video file and stored them in output_dir. 
-        "frame_skip" selectes frames after set interval of images.        
+        "fps" extracts fixed number of frames per second.        
     """
     video_path = Path(video_path)
     output_dir = Path(output_dir)
@@ -15,6 +15,9 @@ def extract_frames(video_path: Path, output_dir: Path, frame_skip: int = 3) -> d
     video = cv2.VideoCapture(video_path)
     if not video.isOpened():
         raise RuntimeError(f"Cannot open video: {video_path}")
+
+    video_fps = video.get(cv2.CAP_PROP_FPS)
+    frame_skip = math.floor(video_fps / fps)
 
     frame_idx = 0
     saved = 0
