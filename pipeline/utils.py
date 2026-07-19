@@ -1,5 +1,14 @@
-from pathlib import Path
+import logging
+import time
 import subprocess
+from pathlib import Path
+from functools import wraps
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 def clone_repo(repo_url: str, destination: str | Path):
     destination = Path(destination)
@@ -7,3 +16,20 @@ def clone_repo(repo_url: str, destination: str | Path):
         ["git", "clone", repo_url, str(destination)],
         check=True,
     )
+
+def log_execution(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        logger.info(f"Started: {func.__name__}")
+
+        start = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            end = time.perf_counter()
+            logger.info(
+                f"Finished: {func.__name__} | "
+                f"Elapsed: {end - start:.4f}s"
+            )
+
+    return wrapper

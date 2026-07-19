@@ -2,7 +2,9 @@ import subprocess
 import sys
 from pathlib import Path
 from utils import clone_repo
+from utils import log_execution
 
+@log_execution
 def train(
     scene_dir: Path,
     result_dir: Path,
@@ -10,7 +12,7 @@ def train(
     max_steps: int = 30_000,
     data_factor: int = 1,
     disable_viewer: bool = True,
-) -> Path:
+):
     """Train a 3D Gaussian Splatting model with gsplat.
 
     Parameters->

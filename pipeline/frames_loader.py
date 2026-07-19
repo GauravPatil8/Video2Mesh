@@ -2,8 +2,10 @@ import cv2
 import os
 from pathlib import Path
 import math
+from utils import log_execution
 
-def extract_frames(video_path: Path, output_dir: Path, fps: int = 3) -> dict:
+@log_execution
+def extract_frames(video_path: Path, output_dir: Path, fps: int = 3):
     """
         Extracts frames from video file and stored them in output_dir. 
         "fps" extracts fixed number of frames per second.        

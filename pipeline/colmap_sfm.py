@@ -1,9 +1,10 @@
 import os
 from pathlib import Path
 import pycolmap
+from utils import log_execution
 
-
-def run_sfm(frames_dir: Path, scene_dir: Path) -> Path:
+@log_execution
+def run_sfm(frames_dir: Path, scene_dir: Path):
 
     image_dir = frames_dir
     sparse_dir = scene_dir / "sparse" / "0"
@@ -54,9 +55,6 @@ def run_sfm(frames_dir: Path, scene_dir: Path) -> Path:
     )
 
     best.write(sparse_dir)
-    
-    return scene_dir
-
 
 def _test_sfm():
     frames_dir = Path("extracted_frames")

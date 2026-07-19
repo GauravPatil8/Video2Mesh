@@ -2,14 +2,16 @@ import subprocess
 import sys
 from pathlib import Path
 from utils import clone_repo
+from utils import log_execution
 
+@log_execution
 def run_mesh_extraction(
     scene_dir: Path,
     gs_output_dir: Path,
     sugar_output_dir: Path,
     sugar_repo: Path,
     gpu_id: int = 0,
-) -> Path:
+):
     """Run SuGaR to extract a mesh from a trained 3DGS model.
 
     Parameters
