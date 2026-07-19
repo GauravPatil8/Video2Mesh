@@ -24,7 +24,7 @@ def orchestrate(config: PipelineConfig) -> Path:
     extract_frames(
         video_path=config.video,
         output_dir=config.frames_dir,
-        frame_skip=config.frame_skip,
+        fps=config.fps,
     )
 
     run_sfm(
@@ -114,7 +114,7 @@ def main() -> int:
         output_dir=args.output_dir.resolve(),
         gsplat_repo=args.gsplat_repo.resolve(),
         sugar_repo=args.sugar_repo.resolve(),
-        frame_skip=args.frame_skip,
+        fps=args.fps,
         max_steps=args.max_steps,
         data_factor=args.data_factor,
         gpu_id=args.gpu,

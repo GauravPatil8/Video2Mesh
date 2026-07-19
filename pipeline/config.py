@@ -7,7 +7,7 @@ class PipelineConfig:
     output_dir: Path
     gsplat_repo: Path
     sugar_repo: Path
-    frame_skip: int = 20
+    fps: int = 5
     max_steps: int = 30_000
     data_factor: int = 1
     gpu_id: int = 0
