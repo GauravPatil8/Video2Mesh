@@ -47,7 +47,7 @@ def orchestrate(config: PipelineConfig) -> Path:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the Dirac video-to-mesh pipeline.",
+        description="Run the video-to-mesh pipeline.",
     )
 
     parser.add_argument(
