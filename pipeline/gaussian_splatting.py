@@ -35,6 +35,12 @@ def train(
     gsplat_repo = Path(repo_dest)
 
     clone_repo(repo_url="https://github.com/nerfstudio-project/gsplat.git", destination=repo_dest)
+
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "-e", "."],
+        cwd=str(repo_dest),
+        check=True,
+    )
     
     trainer_script = gsplat_repo / "examples" / "simple_trainer.py"
     if not trainer_script.exists():

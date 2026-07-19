@@ -38,6 +38,13 @@ def run_mesh_extraction(
     sugar_repo = Path(sugar_repo)
 
     clone_repo(repo_url=repo_url, destination=sugar_repo)
+
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "-e", "."],
+        cwd=str(sugar_repo),
+        check=True,
+    )
+    
     train_script = sugar_repo / "train_full_pipeline.py"
 
     if not train_script.exists():

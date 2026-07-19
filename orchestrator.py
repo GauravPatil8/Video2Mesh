@@ -76,13 +76,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--gsplat_repo",
         type=Path,
-        default=Path("./lib"),
+        default=Path("./lib/gplat"),
         help="Path to the local clone of https://github.com/nerfstudio-project/gsplat.",
     )
     parser.add_argument(
         "--sugar_repo",
         type=Path,
-        default=Path("./lib"),
+        default=Path("./lib/sugar"),
         help="Path to the local clone of https://github.com/Anttwo/SuGaR.",
     )
     parser.add_argument(
