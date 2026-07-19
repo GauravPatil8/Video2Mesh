@@ -2,7 +2,7 @@ import cv2
 import os
 from pathlib import Path
 import math
-from utils import log_execution
+from .utils import log_execution
 
 @log_execution
 def extract_frames(video_path: Path, output_dir: Path, fps: int = 3):

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import pycolmap
-from utils import log_execution
+from .utils import log_execution
 
 @log_execution
 def run_sfm(frames_dir: Path, scene_dir: Path):

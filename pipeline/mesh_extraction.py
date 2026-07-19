@@ -1,8 +1,8 @@
 import subprocess
 import sys
 from pathlib import Path
-from utils import clone_repo
-from utils import log_execution
+from .utils import clone_repo
+from .utils import log_execution
 
 @log_execution
 def run_mesh_extraction(

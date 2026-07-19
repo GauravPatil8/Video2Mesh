@@ -3,3 +3,4 @@ uv.lock
 .python-version
 /pipeline/scene/
 /pipeline/extracted_frames/
+__pycache__
