@@ -1,10 +1,11 @@
 [project]
-name = "Video2Main"
+name = "Video2Mesh"
 version = "0.1.0"
 description = "Video to 3D Mesh pipeline using 3DGS and SuGaR"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "easy-3dgs",
     "opencv-python>=5.0.0.93",
     "pycolmap-cuda12>=4.1.0; sys_platform == 'linux'",
     "pycolmap>=4.1.0; sys_platform != 'linux'",
@@ -13,4 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-dirac-pipeline = "main:main"
+Video2Mesh-pipeline = "main:main"
+
+[tool.uv.sources]
+easy-3dgs = { git = "https://github.com/Jourdelune/easy-3dgs.git" }
