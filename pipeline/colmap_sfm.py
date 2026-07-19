@@ -3,64 +3,78 @@ from pathlib import Path
 import pycolmap
 from .utils import log_execution
 
+def _has_cuda() -> bool:
+    """Return True if pycolmap has CUDA support."""
+    try:
+        return pycolmap.has_cuda
+    except AttributeError:
+        try:
+            return pycolmap.Device.cuda is not None
+        except Exception:
+            return False
+
+
 @log_execution
 def run_sfm(frames_dir: Path, scene_dir: Path):
 
-    image_dir = frames_dir
-    sparse_dir = scene_dir / "sparse" / "0"
+    image_dir = Path(frames_dir)
+    sparse_root = scene_dir / "sparse"
+    sparse_dir = sparse_root / "0"
     database_path = scene_dir / "database.db"
 
-    os.makedirs(sparse_dir, exist_ok=True)
+    sparse_dir.mkdir(parents=True, exist_ok=True)
+
+    use_gpu = _has_cuda()
+    device = pycolmap.Device.cuda if use_gpu else pycolmap.Device.cpu
+
+    print(f"Using {'GPU' if use_gpu else 'CPU'} for COLMAP")
 
     extraction_options = pycolmap.FeatureExtractionOptions()
-    extraction_options.use_gpu = True  
-    extraction_options.gpu_index = "0"
+    extraction_options.use_gpu = use_gpu
+
+    if use_gpu:
+        extraction_options.gpu_index = "0"
 
     pycolmap.extract_features(
         database_path=database_path,
         image_path=image_dir,
         extraction_options=extraction_options,
-        device=pycolmap.Device.auto,
+        device=device,
     )
 
     matching_options = pycolmap.FeatureMatchingOptions()
-    matching_options.use_gpu = True
-    matching_options.gpu_index = "0"
+    matching_options.use_gpu = use_gpu
+
+    if use_gpu:
+        matching_options.gpu_index = "0"
 
     pairing_options = pycolmap.SequentialPairingOptions()
     pairing_options.overlap = 15
-    pairing_options.loop_detection = True
+
+    pairing_options.loop_detection = False
 
     pycolmap.match_sequential(
         database_path=database_path,
         matching_options=matching_options,
         pairing_options=pairing_options,
-        device=pycolmap.Device.auto,
+        device=device,
     )
 
     reconstructions = pycolmap.incremental_mapping(
         database_path=database_path,
         image_path=image_dir,
-        output_path=scene_dir / "sparse",
+        output_path=sparse_root,
     )
 
-    if len(reconstructions) == 0:
+    if not reconstructions:
         raise RuntimeError(
             "COLMAP incremental mapping failed. "
             "Try extracting more frames or increasing overlap."
         )
+
     best = max(
         reconstructions.values(),
         key=lambda r: r.num_reg_images(),
     )
 
     best.write(sparse_dir)
-
-def _test_sfm():
-    frames_dir = Path("extracted_frames")
-    scene_dir = Path("scene")
-    os.makedirs(scene_dir, exist_ok=True)
-    run_sfm(frames_dir, scene_dir)
-
-if __name__ == "__main__":
-    _test_sfm()
