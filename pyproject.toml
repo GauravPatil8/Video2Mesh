@@ -1,48 +1,15 @@
 [project]
-name = "implementation"
+name = "Video2Main"
 version = "0.1.0"
 description = "Video to 3D Mesh pipeline using 3DGS and SuGaR"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "gsplat>=1.5.3",
     "opencv-python>=5.0.0.93",
     "pycolmap-cuda12>=4.1.0; sys_platform == 'linux'",
     "pycolmap>=4.1.0; sys_platform != 'linux'",
     "torch>=2.0.0",
     "torchvision>=0.15.0",
-    "pillow==10.0.1",
-    "pyyaml==6.0",
-    "sympy==1.12",
-    "networkx==3.1",
-    "mpmath==1.3.0",
-    "requests==2.31.0",
-    "tqdm==4.66.1",
-    "plotly==5.18.0",
-    "plyfile==0.8.1",
-    "tabulate==0.9.0",
-    "yacs==0.1.8",
-    "termcolor==2.3.0",
-    "portalocker==2.8.2",
-    "cached-property==1.5.2",
-    "nvidia-ncore>=19.0.0",
-    "viser",
-    "nerfview @ git+https://github.com/nerfstudio-project/nerfview@4538024fe0d15fd1a0e4d760f3695fc44ca72787",
-    "imageio[ffmpeg]",
-    "numpy>=2.0,<3.0",
-    "scipy",
-    "scikit-learn",
-    "torchmetrics==1.8.2",
-    "opencv-python-headless",
-    "tyro>=0.8.8,!=1.0.9,!=1.0.10",
-    "piexif",
-    "tensorboard",
-    "tensorly",
-    "matplotlib",
-    "fused-ssim @ git+https://github.com/rahul-goel/fused-ssim@a7c48d6dd7ac6dc39a7958c7c4452e0b10418f38",
-    "fused-bilagrid @ git+https://github.com/harry7557558/fused-bilagrid@49f0ef06c9f81810fb9b5dd9027cf1844950cc16",
-    "splines",
-    "ppisp @ git+https://github.com/nv-tlabs/ppisp@v1.0.0",
 ]
 
 [project.scripts]
