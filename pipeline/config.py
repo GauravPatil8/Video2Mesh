@@ -14,7 +14,7 @@ class PipelineConfig:
 
     @property
     def frames_dir(self) -> Path:
-        return self.output_dir / "frames"
+        return self.output_dir / "scene" / "images"
 
     @property
     def scene_dir(self) -> Path:

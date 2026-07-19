@@ -35,10 +35,8 @@ def orchestrate(config: PipelineConfig) -> Path:
     train_3dgs(
         scene_dir=config.scene_dir,
         result_dir=config.gs_result_dir,
-        repo_dest=config.gsplat_repo,
         max_steps=config.max_steps,
-        data_factor=config.data_factor,
-        disable_viewer=True,
+        data_factor=config.data_factor
     )
     
     run_mesh_extraction(
@@ -46,7 +44,7 @@ def orchestrate(config: PipelineConfig) -> Path:
         gs_output_dir=config.gs_result_dir,
         sugar_output_dir=config.sugar_output_dir,
         sugar_repo=config.sugar_repo,
-        gpu_id=config.gpu_id,
+        gpu_id=config.gpu_id
     )
 
 
@@ -74,12 +72,6 @@ def parse_args() -> argparse.Namespace:
         help="Extract N frames per second from the video.",
     )
     parser.add_argument(
-        "--gsplat_repo",
-        type=Path,
-        default=Path("./lib/gplat"),
-        help="Path to the local clone of https://github.com/nerfstudio-project/gsplat.",
-    )
-    parser.add_argument(
         "--sugar_repo",
         type=Path,
         default=Path("./lib/sugar"),
@@ -94,7 +86,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--data_factor",
         type=int,
-        default=1,
+        default=4,
         help="Downsample factor for input images.",
     )
     parser.add_argument(
