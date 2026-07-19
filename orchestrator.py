@@ -104,7 +104,6 @@ def main() -> int:
     config = PipelineConfig(
         video=args.video.resolve(),
         output_dir=args.output_dir.resolve(),
-        gsplat_repo=args.gsplat_repo.resolve(),
         sugar_repo=args.sugar_repo.resolve(),
         fps=args.fps,
         max_steps=args.max_steps,

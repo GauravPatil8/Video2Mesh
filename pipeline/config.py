@@ -5,7 +5,6 @@ from pathlib import Path
 class PipelineConfig:
     video: Path
     output_dir: Path
-    gsplat_repo: Path
     sugar_repo: Path
     fps: int = 5
     max_steps: int = 30_000
