@@ -88,7 +88,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--max_steps",
         type=int,
-        default=30_000,
+        default=5000,
         help="Number of gsplat training iterations.",
     )
     parser.add_argument(
