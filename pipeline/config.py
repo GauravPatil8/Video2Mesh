@@ -1,9 +1,12 @@
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 @dataclass
 class PipelineConfig:
     video: Path
+    images: Optional[Path]
+    scene: Optional[Path]
     output_dir: Path
     fps: int = 5
     max_steps: int = 30_000
@@ -15,18 +18,23 @@ class PipelineConfig:
 
     @property
     def frames_dir(self) -> Path:
+
         if self.data_factor > 1:
             return self.output_dir / "scene" / f"images_{self.data_factor}"
         else:
             return self.output_dir / "scene" / "images"
+        
+    
     @property
     def scene_dir(self) -> Path:
-        return self.output_dir / "scene"
+        if self.scene is None:
+            return self.output_dir / "scene"
+        return self.scene
 
     @property
     def gs_result_dir(self) -> Path:
         return self.output_dir / "3dgs"
 
     @property
-    def sugar_output_dir(self) -> Path:
+    def mesh_output_dir(self) -> Path:
         return self.output_dir / "extracted_mesh"
