@@ -28,18 +28,19 @@ def extract_frames(video_path: Path, output_dir: Path, fps: int = 3, data_factor
         ret, frame = video.read()
         if not ret:
             break
-        h, w = frame.shape[:2]
-        frame = cv2.resize(
-            frame,
-            (w // data_factor, h // data_factor),
-            interpolation=cv2.INTER_AREA
-        )
+        
         if frame_idx % frame_skip == 0:
+            h, w = frame.shape[:2]
+            frame = cv2.resize(
+                frame,
+                (w // data_factor, h // data_factor),
+                interpolation=cv2.INTER_AREA
+            )
             if data_factor > 1:
                 out_path = os.path.join(output_dir,f"images_{data_factor}")
             else:
                 out_path = os.path.join(output_dir,f"images")
-                
+
             os.makedirs(out_path, exist_ok=True)
             file_path = os.path.join(out_path, f"frame_{saved:06d}.png")
 
