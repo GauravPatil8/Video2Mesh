@@ -15,8 +15,10 @@ class PipelineConfig:
 
     @property
     def frames_dir(self) -> Path:
-        return self.output_dir / "scene" 
-
+        if self.data_factor > 1:
+            return self.output_dir / "scene" / f"images_{self.data_factor}"
+        else:
+            return self.output_dir / "scene" / "images"
     @property
     def scene_dir(self) -> Path:
         return self.output_dir / "scene"
