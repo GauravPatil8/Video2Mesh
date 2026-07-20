@@ -40,8 +40,6 @@ Install Python dependencies:
 pip install -r requirements.txt
 ```
 
-This project also depends on COLMAP and a GPU-enabled setup for best performance.
-
 ## Run
 
 ```bash
