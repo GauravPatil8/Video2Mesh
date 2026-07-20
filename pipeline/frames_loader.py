@@ -47,7 +47,7 @@ def extract_frames(video_path: Path, output_dir: Path, fps: int = 3, data_factor
     video.release()
 
 def _test_frame_loader():
-    vid_file = os.path.join(R"C:\Users\GAURAV\Downloads\Family.mp4")
+    vid_file = "path/to/you/video"
     images_path = os.path.join("scene", "images")
     os.makedirs(images_path, exist_ok=True)
     extract_frames(Path(vid_file), Path(images_path))
