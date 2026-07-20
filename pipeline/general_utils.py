@@ -5,6 +5,7 @@ from scipy.spatial import KDTree
 from tqdm import tqdm
 import subprocess
 from pathlib import Path
+import cv2
 
 def clone_repo(repo_url: str, destination: str | Path):
     destination = Path(destination)
@@ -13,6 +14,14 @@ def clone_repo(repo_url: str, destination: str | Path):
         check=True,
     )
 
+def resize_image(frame, data_factor):
+    h, w = frame.shape[:2]
+    return cv2.resize(
+        frame,
+        (w // data_factor, h // data_factor),
+        interpolation=cv2.INTER_AREA
+    )
+    
 def poisson_mesh(path, vtx, normal, color, depth, thrsh):
 
     pbar = tqdm(total=4)
