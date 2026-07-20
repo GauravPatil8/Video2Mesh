@@ -23,6 +23,9 @@ For a complete list of command-line arguments and their descriptions, run:
 ```bash
 python orchestrator.py -h
 ```
+## Requirements
+
+- Python 3.10–3.12
 
 ## Installation
 Clone Repository:
