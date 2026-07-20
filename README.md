@@ -11,18 +11,6 @@ The workflow is:
 3. Train a 3D Gaussian Splatting model.
 4. Extract a mesh with Poisson reconstruction.
 
-## Inputs
-
-You can provide exactly one of these:
-
-- `--video path/to/video.mp4`
-- `--images path/to/images/`
-- `--scene path/to/colmap_scene/`
-
-For a complete list of command-line arguments and their descriptions, run:
-```bash
-python orchestrator.py -h
-```
 ## Requirements
 
 - Python 3.10–3.12
@@ -44,4 +32,17 @@ pip install -r requirements.txt
 
 ```bash
 python orchestrator.py --video path/to/video.mp4 --output_dir output
+```
+
+## Inputs
+
+You can provide exactly one of these:
+
+- `--video path/to/video.mp4`
+- `--images path/to/images/`
+- `--scene path/to/colmap_scene/`
+
+For a complete list of command-line arguments and their descriptions, run:
+```bash
+python orchestrator.py -h
 ```
