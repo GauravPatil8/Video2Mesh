@@ -9,6 +9,9 @@ class PipelineConfig:
     max_steps: int = 30_000
     data_factor: int = 1
     gpu_id: int = 0
+    posson_depth: int = 9,
+    density_quantile: float = 0.01,
+    voxel_size:float = 0.0
 
     @property
     def frames_dir(self) -> Path:

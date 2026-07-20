@@ -195,7 +195,9 @@ def run_mesh_extraction(
     # 2. Clean + estimate/orient normals
     points, normals = _prepare_normals(points, normals, voxel_size=voxel_size)
 
-    # 3. Poisson reconstruction via utils/general_utils.poisson_mesh
+    # 3. Poisson reconstruction via general_utils.poisson_mesh
+    #    Pass thrsh=0 so poisson_mesh auto-computes the pruning threshold
+    #    from the 90th percentile of mesh-to-source KNN distances.
     mesh_prefix = str(mesh_output_dir / f"poisson_mesh_{poisson_depth}")
     poisson_mesh(
         path=mesh_prefix,
@@ -203,7 +205,7 @@ def run_mesh_extraction(
         normal=normals,
         color=colors if colors is not None else torch.ones_like(points),
         depth=poisson_depth,
-        thrsh=3e-5,
+        thrsh=0,
     )
 
     # 4. Convert pruned PLY → OBJ

@@ -123,6 +123,9 @@ def main() -> int:
         max_steps=args.max_steps,
         data_factor=args.data_factor,
         gpu_id=args.gpu,
+        posson_depth = args.posson_depth,
+        density_quantile = args.density_quantile,
+        voxel_size = args.voxel_size
     )
 
     orchestrate(config)

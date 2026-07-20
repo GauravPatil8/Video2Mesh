@@ -1,7 +1,5 @@
 import logging
 import time
-import subprocess
-from pathlib import Path
 from functools import wraps
 
 log_file = "pipeline.log"
@@ -22,13 +20,6 @@ if not logger.handlers:
 
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
-
-def clone_repo(repo_url: str, destination: str | Path):
-    destination = Path(destination)
-    subprocess.run(
-        ["git", "clone", repo_url, str(destination)],
-        check=True,
-    )
 
 def log_execution(func):
     @wraps(func)
