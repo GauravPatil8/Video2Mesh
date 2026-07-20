@@ -3,9 +3,9 @@ import os
 import shutil
 from pathlib import Path
 import math
-from .log_utils import log_execution
+from ..utils.logs import log_execution
 from typing import Optional
-from .general_utils import resize_image
+from ..utils.general import resize_image
 
 @log_execution
 def load_frames(*, video_path: Optional[Path], images_path: Optional[Path], output_dir: Path, fps: int = 3, data_factor: int = 4):

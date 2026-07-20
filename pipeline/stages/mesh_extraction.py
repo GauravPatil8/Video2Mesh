@@ -16,8 +16,8 @@ import pymeshlab
 import torch
 from plyfile import PlyData
 
-from .log_utils import log_execution, logger
-from .general_utils import poisson_mesh
+from ..utils.logs import log_execution, logger
+from ..utils.general import poisson_mesh
 
 
 def _find_ply(gs_output_dir: Path) -> Path:

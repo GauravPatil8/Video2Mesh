@@ -9,10 +9,10 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from cli_args import parse_args
 
-from pipeline.frames_loader import load_frames
-from pipeline.colmap_sfm import run_sfm
-from pipeline.gaussian_splatting import train as train_3dgs
-from pipeline.mesh_extraction import run_mesh_extraction
+from pipeline.stages.frames_loader import load_frames
+from pipeline.stages.colmap_sfm import run_sfm
+from pipeline.stages.gaussian_splatting import train as train_3dgs
+from pipeline.stages.mesh_extraction import run_mesh_extraction
 from pipeline.config import PipelineConfig
 
 def orchestrate(config: PipelineConfig) -> Path:
