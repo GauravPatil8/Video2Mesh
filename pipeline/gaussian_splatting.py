@@ -1,6 +1,6 @@
 from pathlib import Path
-from .utils import clone_repo
-from .utils import log_execution
+from .log_utils import clone_repo
+from .log_utils import log_execution
 from easy_3dgs.pipeline import GaussianSplattingPipeline
 
 @log_execution

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import pycolmap
-from .utils import log_execution
+from .log_utils import log_execution
 
 def _has_cuda() -> bool:
     """Return True if pycolmap has CUDA support."""
