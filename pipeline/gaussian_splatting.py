@@ -30,6 +30,7 @@ def train(
         result_dir=result_dir,
         strategy_type="mcmc",  
         max_steps = max_steps,
+        disable_viewer=True
     )
 
     gaussian_splatting_pipeline.train(scene_dir)
