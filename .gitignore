@@ -4,3 +4,4 @@ uv.lock
 /pipeline/scene/
 /pipeline/extracted_frames/
 __pycache__
+.vscode
