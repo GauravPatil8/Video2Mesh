@@ -42,9 +42,10 @@ def orchestrate(config: PipelineConfig) -> Path:
     run_mesh_extraction(
         scene_dir=config.scene_dir,
         gs_output_dir=config.gs_result_dir,
-        sugar_output_dir=config.sugar_output_dir,
-        sugar_repo=config.sugar_repo,
-        gpu_id=config.gpu_id
+        mesh_output_dir=config.sugar_output_dir,
+        poisson_depth = config.poisson_depth,
+        density_quantile = config.density_quantile,
+        voxel_size = config.voxel_size,
     )
 
 
@@ -71,18 +72,32 @@ def parse_args() -> argparse.Namespace:
         default=5,
         help="Extract N frames per second from the video.",
     )
-    parser.add_argument(
-        "--sugar_repo",
-        type=Path,
-        default=Path("./lib/sugar"),
-        help="Path to the local clone of https://github.com/Anttwo/SuGaR.",
-    )
+
     parser.add_argument(
         "--max_steps",
         type=int,
         default=5000,
         help="Number of gsplat training iterations.",
     )
+    parser.add_argument(
+        "--poisson_depth",
+        type=int,
+        default=9,
+        help="Octree depth for Poisson surface reconstruction. Higher values capture finer detail but use more memory (default: 9).",
+    )
+    parser.add_argument(
+        "--density_quantile",
+        type=float,
+        default=0.01,
+        help="Fraction (0-1) of lowest-density vertices to trim from the reconstructed mesh. Removes spurious surfaces at the boundary (default: 0.01).",
+    )
+    parser.add_argument(
+        "--voxel_size",
+        type=float,
+        default=0.0,
+        help="Voxel size for point cloud downsampling before reconstruction. 0 disables downsampling (default: 0.0).",
+    )
+
     parser.add_argument(
         "--data_factor",
         type=int,

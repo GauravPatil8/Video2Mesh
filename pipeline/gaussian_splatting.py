@@ -20,7 +20,7 @@ def train(
         max_steps : int, optional
             Total training iterations (default 30_000).
         data_factor : int, optional
-            Down-sample factor for input images (default ``1`` = full res).
+            Down-sample factor for input images (default 1 = full res).
     """
     scene_dir = Path(scene_dir)
     result_dir = Path(result_dir)
