@@ -2,7 +2,7 @@ import cv2
 import os
 from pathlib import Path
 import math
-from log_utils import log_execution
+from .log_utils import log_execution
 
 @log_execution
 def extract_frames(video_path: Path, output_dir: Path, fps: int = 3, data_factor: int = 4):
@@ -36,11 +36,14 @@ def extract_frames(video_path: Path, output_dir: Path, fps: int = 3, data_factor
         )
         if frame_idx % frame_skip == 0:
             if data_factor > 1:
-                out_path = os.path.join(output_dir,f"images_{data_factor}", f"frame_{saved:06d}.png")
+                out_path = os.path.join(output_dir,f"images_{data_factor}")
             else:
-                out_path = os.path.join(output_dir,"images", f"frame_{saved:06d}.png")
+                out_path = os.path.join(output_dir,f"images")
+                
+            os.makedirs(out_path, exist_ok=True)
+            file_path = os.path.join(out_path, f"frame_{saved:06d}.png")
 
-            cv2.imwrite(out_path, frame)
+            cv2.imwrite(file_path, frame)
             saved += 1
         frame_idx += 1
 
