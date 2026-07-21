@@ -74,5 +74,11 @@ def parse_args() -> argparse.Namespace:
         default=0,
         help="CUDA device index.",
     )
+    parser.add_argument(
+        "--strategy_type",
+        type=str,
+        default="mcmc",
+        help="strategy for pruning and addition of GSs. [`default`,`mcmc`]",
+    )
 
     return parser.parse_args()

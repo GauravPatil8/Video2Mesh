@@ -53,7 +53,7 @@ def orchestrate(config: PipelineConfig) -> Path:
         scene_dir=config.scene_dir,
         result_dir=config.gs_result_dir,
         max_steps=config.max_steps,
-        data_factor=config.data_factor
+        strategy_type=config.strategy_type
     )
     
     run_mesh_extraction(
@@ -78,7 +78,8 @@ def main() -> int:
         gpu_id=args.gpu,
         poisson_depth = args.poisson_depth,
         density_quantile = args.density_quantile,
-        voxel_size = args.voxel_size
+        voxel_size = args.voxel_size,
+        strategy_type= args.strategy_type
     )
 
     orchestrate(config)

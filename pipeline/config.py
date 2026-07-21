@@ -15,14 +15,11 @@ class PipelineConfig:
     poisson_depth: int = 9,
     density_quantile: float = 0.01,
     voxel_size:float = 0.0
+    strategy_type: str = "mcmc"
 
     @property
     def frames_dir(self) -> Path:
-
-        if self.data_factor > 1:
-            return self.output_dir / "scene" / f"images_{self.data_factor}"
-        else:
-            return self.output_dir / "scene" / "images"
+        return self.output_dir / "scene" / "images"
         
     
     @property
