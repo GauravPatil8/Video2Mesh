@@ -41,7 +41,9 @@ def orchestrate(config: PipelineConfig) -> Path:
             images_path=config.images,
             output_dir=config.frames_dir,
             fps=config.fps,
-            data_factor = config.data_factor
+            data_factor=config.data_factor,
+            segment=config.segment,
+            prompt=config.prompt,
         )
 
         run_sfm(
@@ -76,10 +78,12 @@ def main() -> int:
         max_steps=args.max_steps,
         data_factor=args.data_factor,
         gpu_id=args.gpu,
-        poisson_depth = args.poisson_depth,
-        density_quantile = args.density_quantile,
-        voxel_size = args.voxel_size,
-        strategy_type= args.strategy_type
+        segment=args.segment,
+        prompt=args.prompt,
+        poisson_depth=args.poisson_depth,
+        density_quantile=args.density_quantile,
+        voxel_size=args.voxel_size,
+        strategy_type=args.strategy_type,
     )
 
     orchestrate(config)

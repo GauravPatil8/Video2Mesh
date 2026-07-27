@@ -6,9 +6,18 @@ import math
 from ..utils.logs import log_execution
 from typing import Optional
 from ..utils.general import resize_image
+from ultralytics import FastSAM
+import numpy as np
 
 @log_execution
-def load_frames(*, video_path: Optional[Path], images_path: Optional[Path], output_dir: Path, fps: int = 3, data_factor: int = 4):
+def load_frames(*, 
+                video_path: Optional[Path], 
+                images_path: Optional[Path], 
+                output_dir: Path, 
+                fps: int = 3, 
+                data_factor: int = 4, 
+                segment: bool = True, 
+                prompt: Optional[str] = "toy"):
     """
         Loads frames from video files and Image folders. 
         "fps" extracts fixed number of frames per second.        
@@ -16,6 +25,7 @@ def load_frames(*, video_path: Optional[Path], images_path: Optional[Path], outp
 
     output_dir = Path(output_dir)
     os.makedirs(output_dir, exist_ok=True)
+
     if video_path is not None:
         video_path = Path(video_path)
 
@@ -53,6 +63,26 @@ def load_frames(*, video_path: Optional[Path], images_path: Optional[Path], outp
             else:
                 shutil.move(image_path, dest_path)
 
+    if segment:
+        model = FastSAM("FastSAM-x.pt")
+        for img_name in os.listdir(output_dir):
+            img_path = os.path.join(output_dir, img_name)
+            results = model(img_path, texts = prompt)
+            image = cv2.imread(img_path)
+            output = np.zeros_like(image)
+
+            if results[0].masks is not None:
+                masks = results[0].masks.data.cpu().numpy()
+
+                combined_mask = np.any(masks, axis=0).astype(np.uint8)
+
+                combined_mask = cv2.resize(
+                    combined_mask,
+                    (image.shape[1], image.shape[0]),
+                    interpolation=cv2.INTER_NEAREST,
+                )
+                output[combined_mask == 1] = image[combined_mask == 1]
+            cv2.imwrite(img_path, output)
 
 def _test_frame_loader():
     vid_file = "path/to/you/video"

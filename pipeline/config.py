@@ -12,9 +12,11 @@ class PipelineConfig:
     max_steps: int = 30_000
     data_factor: int = 1
     gpu_id: int = 0
-    poisson_depth: int = 9,
-    density_quantile: float = 0.01,
-    voxel_size:float = 0.0
+    segment: bool = True
+    prompt: Optional[str] = "toy"
+    poisson_depth: int = 9
+    density_quantile: float = 0.01
+    voxel_size: float = 0.0
     strategy_type: str = "mcmc"
 
     @property

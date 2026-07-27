@@ -69,6 +69,25 @@ def parse_args() -> argparse.Namespace:
         help="Downsample factor for input images.",
     )
     parser.add_argument(
+        "--segment",
+        dest="segment",
+        action="store_true",
+        help="Enable FastSAM segmentation on extracted frames.",
+    )
+    parser.add_argument(
+        "--no-segment",
+        dest="segment",
+        action="store_false",
+        help="Disable FastSAM segmentation on extracted frames.",
+    )
+    parser.set_defaults(segment=True)
+    parser.add_argument(
+        "--prompt",
+        type=str,
+        default="toy",
+        help="Text prompt used by FastSAM during frame segmentation.",
+    )
+    parser.add_argument(
         "--gpu",
         type=int,
         default=0,

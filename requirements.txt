@@ -7,3 +7,4 @@ git+https://github.com/Jourdelune/easy-3dgs.git
 pymeshlab
 scipy
 open3d
+ultralytics
