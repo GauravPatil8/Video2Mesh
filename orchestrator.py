@@ -63,7 +63,6 @@ def orchestrate(config: PipelineConfig) -> Path:
         gs_output_dir=config.gs_result_dir,
         mesh_output_dir=config.mesh_output_dir,
         poisson_depth = config.poisson_depth,
-        density_quantile = config.density_quantile,
         voxel_size = config.voxel_size,
     )
 
