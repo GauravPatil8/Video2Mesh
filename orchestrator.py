@@ -81,7 +81,6 @@ def main() -> int:
         segment=args.segment,
         prompt=args.prompt,
         poisson_depth=args.poisson_depth,
-        density_quantile=args.density_quantile,
         voxel_size=args.voxel_size,
         strategy_type=args.strategy_type,
     )

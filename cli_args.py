@@ -46,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--poisson_depth",
         type=int,
-        default=9,
+        default=11,
         help="Octree depth for Poisson surface reconstruction. Higher values capture finer detail but use more memory (default: 9).",
     )
     parser.add_argument(

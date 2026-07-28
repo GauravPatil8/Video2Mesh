@@ -15,7 +15,6 @@ class PipelineConfig:
     segment: bool = True
     prompt: Optional[str] = "toy"
     poisson_depth: int = 9
-    density_quantile: float = 0.01
     voxel_size: float = 0.0
     strategy_type: str = "mcmc"
 
