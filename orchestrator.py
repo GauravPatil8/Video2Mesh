@@ -59,7 +59,6 @@ def orchestrate(config: PipelineConfig) -> Path:
     )
     
     run_mesh_extraction(
-        scene_dir=config.scene_dir,
         gs_output_dir=config.gs_result_dir,
         mesh_output_dir=config.mesh_output_dir,
         poisson_depth = config.poisson_depth,
