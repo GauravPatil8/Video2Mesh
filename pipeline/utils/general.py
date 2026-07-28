@@ -22,13 +22,12 @@ def resize_image(frame, data_factor):
         interpolation=cv2.INTER_AREA
     )
     
-def poisson_mesh(path, vtx, normal, color, depth, thrsh):
+def poisson_mesh(path, vtx, normal, depth, thrsh):
 
     pbar = tqdm(total=4)
     pbar.update(1)
     pbar.set_description('Poisson meshing')
 
-    # create pcl with normal from sampled points
     ms = pymeshlab.MeshSet()
     pts = pymeshlab.Mesh(vtx.cpu().numpy(), [], normal.cpu().numpy())
     ms.add_mesh(pts)
@@ -49,30 +48,25 @@ def poisson_mesh(path, vtx, normal, color, depth, thrsh):
 
     pbar.update(1)
     pbar.set_description('Mesh refining')
-    # knn to compute distance and color of poisson-meshed points to sampled points
+    
     tree = KDTree(vtx.cpu().numpy())
-    nn_dist_np, nn_idx_np = tree.query(vert, k=4)
+    nn_dist_np, _ = tree.query(vert, k=4)
     nn_dist = torch.from_numpy(nn_dist_np).to(torch.float32)
-    nn_idx_t = torch.from_numpy(nn_idx_np).to(torch.long)
-    nn_color = torch.mean(color[nn_idx_t], axis=1)
 
-    # create mesh with color and quality (distance to the closest sampled points)
-    vert_color = nn_color.clip(0, 1).cpu().numpy()
-    vert_color = np.concatenate([vert_color, np.ones_like(vert_color[:, :1])], 1)
+
     quality = nn_dist[:, 0].cpu().numpy()
     print(f"[poisson_mesh] Quality stats: min={quality.min():.6f}, "
           f"median={np.median(quality):.6f}, "
           f"p90={np.percentile(quality, 90):.6f}, "
           f"max={quality.max():.6f}")
-    ms.add_mesh(pymeshlab.Mesh(vert, face, v_color_matrix=vert_color, v_scalar_array=quality))
+    ms.add_mesh(pymeshlab.Mesh(vert, face, v_scalar_array=quality))
 
     pbar.update(1)
     pbar.set_description('Mesh cleaning')
 
-    # Compute pruning threshold
     if thrsh <= 0:
         thrsh = float(np.percentile(quality, 90))
-    # Safety: never prune if it would leave fewer than 100 vertices
+
     kept = (quality <= thrsh).sum()
     print(f"[poisson_mesh] Pruning threshold={thrsh:.6f}, vertices kept={kept}/{len(quality)}")
     if kept >= 100:
@@ -81,7 +75,6 @@ def poisson_mesh(path, vtx, normal, color, depth, thrsh):
     else:
         print("[poisson_mesh] Skipping pruning (would remove too many vertices)")
 
-    # fill holes and smooth only if we still have faces
     if ms.current_mesh().face_number() > 0:
         ms.meshing_close_holes(maxholesize=300)
         ms.save_current_mesh(path + '_pruned.ply')

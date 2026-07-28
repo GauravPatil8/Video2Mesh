@@ -48,8 +48,7 @@ def _load_gaussian_ply(ply_path: Path):
     """
     ply = PlyData.read(str(ply_path))
     vertex = ply["vertex"]
-    prop_names = {p.name for p in vertex.properties}
-
+    
     # Positions
     points = np.column_stack([
         np.array(vertex["x"], dtype=np.float32),
@@ -57,54 +56,10 @@ def _load_gaussian_ply(ply_path: Path):
         np.array(vertex["z"], dtype=np.float32),
     ])
 
-    # Normals (may be absent)
-    normals = None
-    if {"nx", "ny", "nz"}.issubset(prop_names):
-        n = np.column_stack([
-            np.array(vertex["nx"], dtype=np.float32),
-            np.array(vertex["ny"], dtype=np.float32),
-            np.array(vertex["nz"], dtype=np.float32),
-        ])
-        norms = np.linalg.norm(n, axis=1, keepdims=True)
-        if (norms > 1e-8).sum() > 0.5 * len(n):
-            normals = n / np.maximum(norms, 1e-8)
-
-    # Colours: SH DC band or raw RGB
-    colors = None
-    if {"f_dc_0", "f_dc_1", "f_dc_2"}.issubset(prop_names):
-        C0 = 0.28209479177387814
-        colors = np.clip(np.column_stack([
-            0.5 + C0 * np.array(vertex["f_dc_0"], dtype=np.float32),
-            0.5 + C0 * np.array(vertex["f_dc_1"], dtype=np.float32),
-            0.5 + C0 * np.array(vertex["f_dc_2"], dtype=np.float32),
-        ]), 0.0, 1.0)
-    elif {"red", "green", "blue"}.issubset(prop_names):
-        colors = np.column_stack([
-            np.array(vertex["red"], dtype=np.float32) / 255.0,
-            np.array(vertex["green"], dtype=np.float32) / 255.0,
-            np.array(vertex["blue"], dtype=np.float32) / 255.0,
-        ])
-
-    # Opacity filter (sigmoid of logit)
-    if "opacity" in prop_names:
-        opacity = np.array(vertex["opacity"], dtype=np.float32)
-        mask = (1.0 / (1.0 + np.exp(-opacity))) > 0.05
-        points = points[mask]
-        if normals is not None:
-            normals = normals[mask]
-        if colors is not None:
-            colors = colors[mask]
-        logger.info(
-            f"Opacity filter: kept {mask.sum()}/{len(mask)} Gaussians "
-            f"(threshold 0.05)"
-        )
-
     # Convert to torch tensors (poisson_mesh expects them)
     points_t = torch.from_numpy(points)
-    normals_t = torch.from_numpy(normals) if normals is not None else None
-    colors_t = torch.from_numpy(colors) if colors is not None else None
 
-    return points_t, normals_t, colors_t
+    return points_t
 
 
 def _prepare_normals(
@@ -152,28 +107,22 @@ def _prepare_normals(
 
 @log_execution
 def run_mesh_extraction(
-    scene_dir: Path,
     gs_output_dir: Path,
     mesh_output_dir: Path,
     *,
     poisson_depth: int = 9,
-    density_quantile: float = 0.01,
     voxel_size: float = 0.0,
 ) -> Path:
     """Extract a triangle mesh from a trained 3DGS scene.
 
     Parameters
     ----------
-    scene_dir : Path
-        COLMAP scene directory.
     gs_output_dir : Path
         Directory containing the gsplat ``*.ply`` point cloud.
     mesh_output_dir : Path
         Output directory for the mesh files.
     poisson_depth : int
         Octree depth for Poisson reconstruction (default 9).
-    density_quantile : float
-        Currently unused (pruning uses KNN distance threshold).
     voxel_size : float
         Voxel size for point-cloud downsampling (0 = disabled).
 
@@ -186,38 +135,34 @@ def run_mesh_extraction(
     mesh_output_dir = Path(mesh_output_dir)
     mesh_output_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Load the Gaussian splat PLY
     ply_path = _find_ply(gs_output_dir)
     logger.info(f"Loading Gaussian PLY: {ply_path}")
-    points, normals, colors = _load_gaussian_ply(ply_path)
+    points = _load_gaussian_ply(ply_path)
     logger.info(f"Loaded {len(points)} Gaussians")
 
-    # 2. Clean + estimate/orient normals
     points, normals = _prepare_normals(points, normals, voxel_size=voxel_size)
 
-    # 3. Poisson reconstruction via general_utils.poisson_mesh
-    #    Pass thrsh=0 so poisson_mesh auto-computes the pruning threshold
-    #    from the 90th percentile of mesh-to-source KNN distances.
     mesh_prefix = str(mesh_output_dir / f"poisson_mesh_{poisson_depth}")
     poisson_mesh(
         path=mesh_prefix,
         vtx=points,
         normal=normals,
-        color=colors if colors is not None else torch.ones_like(points),
         depth=poisson_depth,
         thrsh=0,
     )
 
-    # 4. Convert pruned PLY → OBJ
     pruned_ply = mesh_prefix + "_pruned.ply"
-    obj_path = mesh_output_dir / "mesh.obj"
+    plain_ply = mesh_prefix + "_plain.ply"
+    pruned_obj_path = mesh_output_dir / "pruned_mesh.obj"
+    plain_obj_path = mesh_output_dir / "plain_mesh.obj"
+
     ms = pymeshlab.MeshSet()
     ms.load_new_mesh(pruned_ply)
-    ms.save_current_mesh(str(obj_path))
-    logger.info(
-        f"Mesh saved to {obj_path}  "
-        f"({ms.current_mesh().vertex_number()} verts, "
-        f"{ms.current_mesh().face_number()} faces)"
-    )
+    ms.save_current_mesh(str(pruned_obj_path))
 
-    return obj_path
+    ms.load_new_mesh(plain_ply)
+    ms.save_current_mesh(str(plain_obj_path))
+
+    logger.info(
+        f"Mesh saved to {pruned_obj_path} & {plain_obj_path}"
+    )

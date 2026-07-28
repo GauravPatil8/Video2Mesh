@@ -50,12 +50,6 @@ def parse_args() -> argparse.Namespace:
         help="Octree depth for Poisson surface reconstruction. Higher values capture finer detail but use more memory (default: 9).",
     )
     parser.add_argument(
-        "--density_quantile",
-        type=float,
-        default=0.01,
-        help="Fraction (0-1) of lowest-density vertices to trim from the reconstructed mesh. Removes spurious surfaces at the boundary (default: 0.01).",
-    )
-    parser.add_argument(
         "--voxel_size",
         type=float,
         default=0.0,
