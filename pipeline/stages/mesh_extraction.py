@@ -64,7 +64,6 @@ def _load_gaussian_ply(ply_path: Path):
 
 def _prepare_normals(
     points: torch.Tensor,
-    normals: torch.Tensor | None,
     voxel_size: float = 0.0,
     nb_neighbors: int = 30,
     std_ratio: float = 2.0,
@@ -76,9 +75,7 @@ def _prepare_normals(
     """
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points.numpy().astype(np.float64))
-    if normals is not None:
-        pcd.normals = o3d.utility.Vector3dVector(normals.numpy().astype(np.float64))
-
+    
     if voxel_size > 0:
         pcd = pcd.voxel_down_sample(voxel_size)
         logger.info(f"After voxel downsampling ({voxel_size}): {len(pcd.points)} pts")
@@ -140,7 +137,7 @@ def run_mesh_extraction(
     points = _load_gaussian_ply(ply_path)
     logger.info(f"Loaded {len(points)} Gaussians")
 
-    points, normals = _prepare_normals(points, normals, voxel_size=voxel_size)
+    points, normals = _prepare_normals(points, voxel_size=voxel_size)
 
     mesh_prefix = str(mesh_output_dir / f"poisson_mesh_{poisson_depth}")
     poisson_mesh(
