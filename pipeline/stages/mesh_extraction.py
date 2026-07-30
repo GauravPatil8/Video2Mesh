@@ -38,13 +38,11 @@ def _find_ply(gs_output_dir: Path) -> Path:
 
 
 def _load_gaussian_ply(ply_path: Path):
-    """Load a 3DGS PLY and return (points, normals, colors) as torch tensors.
+    """Load a 3DGS PLY and return (points) as torch tensors.
 
     Returns
     -------
     points : Tensor (N, 3)
-    normals : Tensor | None (N, 3)
-    colors : Tensor | None (N, 3) — values in [0, 1]
     """
     ply = PlyData.read(str(ply_path))
     vertex = ply["vertex"]
@@ -56,7 +54,6 @@ def _load_gaussian_ply(ply_path: Path):
         np.array(vertex["z"], dtype=np.float32),
     ])
 
-    # Convert to torch tensors (poisson_mesh expects them)
     points_t = torch.from_numpy(points)
 
     return points_t
