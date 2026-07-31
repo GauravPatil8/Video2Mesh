@@ -9,14 +9,10 @@ class PipelineConfig:
     scene: Optional[Path]
     output_dir: Path
     fps: int = 5
-    max_steps: int = 30_000
     data_factor: int = 1
     gpu_id: int = 0
     segment: bool = True
     prompt: Optional[str] = "toy"
-    poisson_depth: int = 9
-    voxel_size: float = 0.0
-    strategy_type: str = "mcmc"
 
     @property
     def frames_dir(self) -> Path:
@@ -28,10 +24,6 @@ class PipelineConfig:
         if self.scene is None:
             return self.output_dir / "scene"
         return self.scene
-
-    @property
-    def gs_result_dir(self) -> Path:
-        return self.output_dir / "3dgs"
 
     @property
     def mesh_output_dir(self) -> Path:

@@ -11,7 +11,6 @@ from cli_args import parse_args
 
 from pipeline.stages.frames_loader import load_frames
 from pipeline.stages.colmap_sfm import run_sfm
-from pipeline.stages.gaussian_splatting import train as train_3dgs
 from pipeline.stages.mesh_extraction import run_mesh_extraction
 from pipeline.config import PipelineConfig
 
@@ -19,7 +18,6 @@ def orchestrate(config: PipelineConfig) -> Path:
     config.output_dir.mkdir(parents=True, exist_ok=True)
     config.frames_dir.mkdir(parents=True, exist_ok=True)
     config.scene_dir.mkdir(parents=True, exist_ok=True)
-    config.gs_result_dir.mkdir(parents=True, exist_ok=True)
     config.mesh_output_dir.mkdir(parents=True, exist_ok=True)
 
     inputs = [config.video, config.images, config.scene]
@@ -51,18 +49,9 @@ def orchestrate(config: PipelineConfig) -> Path:
             scene_dir=config.scene_dir,
         )
 
-    train_3dgs(
-        scene_dir=config.scene_dir,
-        result_dir=config.gs_result_dir,
-        max_steps=config.max_steps,
-        strategy_type=config.strategy_type
-    )
-    
     run_mesh_extraction(
-        gs_output_dir=config.gs_result_dir,
+        scene_dir=config.scene_dir,
         mesh_output_dir=config.mesh_output_dir,
-        poisson_depth = config.poisson_depth,
-        voxel_size = config.voxel_size,
     )
 
 def main() -> int:
@@ -73,14 +62,10 @@ def main() -> int:
         scene=args.scene.resolve() if args.scene else None,
         output_dir=args.output_dir.resolve(),
         fps=args.fps,
-        max_steps=args.max_steps,
         data_factor=args.data_factor,
         gpu_id=args.gpu,
         segment=args.segment,
         prompt=args.prompt,
-        poisson_depth=args.poisson_depth,
-        voxel_size=args.voxel_size,
-        strategy_type=args.strategy_type,
     )
 
     orchestrate(config)

@@ -7,3 +7,7 @@ __pycache__
 .vscode
 pipeline.log
 output
+/libs/*
+!/libs/.gitkeep
+!/libs/SuGaR/
+!/libs/SuGaR/.gitkeep

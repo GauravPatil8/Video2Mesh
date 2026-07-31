@@ -1,13 +1,10 @@
 import torch
 import numpy as np
-import pymeshlab
-from scipy.spatial import KDTree
-from tqdm import tqdm
 import subprocess
 from pathlib import Path
 import cv2
 
-def clone_repo(repo_url: str, destination: str | Path):
+def clone_repo(repo_url, destination):
     destination = Path(destination)
     subprocess.run(
         ["git", "clone", repo_url, str(destination)],
@@ -21,73 +18,3 @@ def resize_image(frame, data_factor):
         (w // data_factor, h // data_factor),
         interpolation=cv2.INTER_AREA
     )
-    
-def poisson_mesh(path, vtx, normal, depth, thrsh):
-
-    pbar = tqdm(total=4)
-    pbar.update(1)
-    pbar.set_description('Poisson meshing')
-
-    ms = pymeshlab.MeshSet()
-    pts = pymeshlab.Mesh(vtx.cpu().numpy(), [], normal.cpu().numpy())
-    ms.add_mesh(pts)
-
-    # poisson reconstruction
-    ms.generate_surface_reconstruction_screened_poisson(depth=depth, preclean=True, samplespernode=1.5)
-    vert = ms.current_mesh().vertex_matrix()
-    face = ms.current_mesh().face_matrix()
-    print(f"[poisson_mesh] Poisson output: {len(vert)} verts, {len(face)} faces")
-    ms.save_current_mesh(path + '_plain.ply')
-
-    if len(face) == 0:
-        print("[poisson_mesh] WARNING: Poisson produced 0 faces. Saving as-is.")
-        ms.save_current_mesh(path + '_pruned.ply')
-        pbar.update(3)
-        pbar.close()
-        return
-
-    pbar.update(1)
-    pbar.set_description('Mesh refining')
-    
-    tree = KDTree(vtx.cpu().numpy())
-    nn_dist_np, _ = tree.query(vert, k=4)
-    nn_dist = torch.from_numpy(nn_dist_np).to(torch.float32)
-
-
-    quality = nn_dist[:, 0].cpu().numpy()
-    print(f"[poisson_mesh] Quality stats: min={quality.min():.6f}, "
-          f"median={np.median(quality):.6f}, "
-          f"p90={np.percentile(quality, 90):.6f}, "
-          f"max={quality.max():.6f}")
-    ms.add_mesh(pymeshlab.Mesh(vert, face, v_scalar_array=quality))
-
-    pbar.update(1)
-    pbar.set_description('Mesh cleaning')
-
-    if thrsh <= 0:
-        thrsh = float(np.percentile(quality, 90))
-
-    kept = (quality <= thrsh).sum()
-    print(f"[poisson_mesh] Pruning threshold={thrsh:.6f}, vertices kept={kept}/{len(quality)}")
-    if kept >= 100:
-        ms.compute_selection_by_condition_per_vertex(condselect=f"q>{thrsh}")
-        ms.meshing_remove_selected_vertices()
-    else:
-        print("[poisson_mesh] Skipping pruning (would remove too many vertices)")
-
-    if ms.current_mesh().face_number() > 0:
-        ms.meshing_close_holes(maxholesize=300)
-        ms.save_current_mesh(path + '_pruned.ply')
-
-        ms.load_new_mesh(path + '_pruned.ply')
-        ms.apply_coord_laplacian_smoothing(stepsmoothnum=3, boundary=True)
-        ms.save_current_mesh(path + '_pruned.ply')
-    else:
-        print("[poisson_mesh] WARNING: No faces after pruning, saving plain mesh")
-        ms.load_new_mesh(path + '_plain.ply')
-        ms.save_current_mesh(path + '_pruned.ply')
-
-    print(f"[poisson_mesh] Final: {ms.current_mesh().vertex_number()} verts, "
-          f"{ms.current_mesh().face_number()} faces")
-    pbar.update(1)
-    pbar.close()

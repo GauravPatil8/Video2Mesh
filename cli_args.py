@@ -38,25 +38,6 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--max_steps",
-        type=int,
-        default=5000,
-        help="Number of gsplat training iterations.",
-    )
-    parser.add_argument(
-        "--poisson_depth",
-        type=int,
-        default=11,
-        help="Octree depth for Poisson surface reconstruction. Higher values capture finer detail but use more memory (default: 9).",
-    )
-    parser.add_argument(
-        "--voxel_size",
-        type=float,
-        default=0.0,
-        help="Voxel size for point cloud downsampling before reconstruction. 0 disables downsampling (default: 0.0).",
-    )
-
-    parser.add_argument(
         "--data_factor",
         type=int,
         default=1,
@@ -87,11 +68,4 @@ def parse_args() -> argparse.Namespace:
         default=0,
         help="CUDA device index.",
     )
-    parser.add_argument(
-        "--strategy_type",
-        type=str,
-        default="mcmc",
-        help="strategy for pruning and addition of GSs. [`default`,`mcmc`]",
-    )
-
     return parser.parse_args()

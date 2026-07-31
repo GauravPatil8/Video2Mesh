@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ## Run
 
 ```bash
-python orchestrator.py --video path/to/video.mp4 --fps 3 --max_steps 10000 --data_factor 4
+python orchestrator.py --video path/to/video.mp4 --fps 3 --data_factor 4
 ```
 
 ## Inputs

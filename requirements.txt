@@ -1,10 +1,4 @@
-opencv-python>=5.0.0.93
-plyfile==0.8.1
-pycolmap-cuda12>=3.10.0 ; sys_platform == "linux"
-pycolmap>=3.10.0 ; sys_platform != "linux"
-tqdm==4.66.1
-git+https://github.com/Jourdelune/easy-3dgs.git
-pymeshlab
-scipy
-open3d
+numpy<2.0
+opencv-python
+pycolmap>=3.10.0
 ultralytics
