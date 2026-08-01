@@ -3,9 +3,11 @@ import numpy as np
 import subprocess
 from pathlib import Path
 import cv2
+import os
 
 def clone_repo(repo_url, destination):
     destination = Path(destination)
+    os.makedirs(destination, exist_ok=True)
     subprocess.run(
         ["git", "clone", repo_url, str(destination)],
         check=True,
