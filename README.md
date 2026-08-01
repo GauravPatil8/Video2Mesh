@@ -2,6 +2,8 @@
 
 A minimal pipeline that turns a video, image set, or an existing COLMAP scene into a 3D mesh.
 
+![Front render preview](front_render.png)
+
 ## What it does
 
 The workflow is:
@@ -66,6 +68,29 @@ python orchestrator.py \
 ```
 
 Run the pipeline:
+
+```bash
+python orchestrator.py --video path/to/video.mp4 --fps 3 --data_factor 4 --prompt "oxford book"
+```
+
+## Local Python setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/GauravPatil8/Video2Mesh.git
+cd Video2Mesh
+```
+
+Run the repository helper script as well:
+
+```bash
+python install.py
+```
+
+> This helper script clones the SuGaR repository into the local libs folder and runs its installer. Make sure the required SuGaR dependencies are available in your environment before running the full pipeline.
+
+Run the pipeline locally:
 
 ```bash
 python orchestrator.py --video path/to/video.mp4 --fps 3 --data_factor 4 --prompt "oxford book"
