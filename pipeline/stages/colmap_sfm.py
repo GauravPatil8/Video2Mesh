@@ -64,14 +64,9 @@ def run_sfm(frames_dir: Path, scene_dir: Path):
     if use_gpu:
         matching_options.gpu_index = "0"
 
-    pairing_options = pycolmap.SequentialPairingOptions()
-    pairing_options.overlap = 15
-    pairing_options.loop_detection = False
-
-    pycolmap.match_sequential(
+    pycolmap.match_exhaustive(
         database_path=str(database_path),
         matching_options=matching_options,
-        pairing_options=pairing_options,
         device=device,
     )
 
